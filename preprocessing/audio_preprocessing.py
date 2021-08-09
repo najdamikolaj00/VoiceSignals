@@ -3,7 +3,7 @@ import numpy as np
 import librosa
 import librosa.display
 import os
-import pandas as pd
+
 
 
 def import_audio(path):
@@ -26,7 +26,7 @@ class AudioPreprocessing():
         # Crop audio to start with a threshold value
         def delete_treshold_segments(audio_file, threshold):
             audio_data = audio_file
-            while audio_data[0] < threshold:
+            while abs(audio_data[0]) < threshold:
                     audio_data = audio_data[1:]
 
             return audio_data
@@ -46,15 +46,19 @@ class AudioPreprocessing():
     
         return self
 
-    def spectrogram_transform(self):
+    def spectrogram(self):
         S_full, phase = librosa.magphase(librosa.stft(self.audio_file))
 
         plt.figure(figsize = (12, 4))
         librosa.display.specshow(librosa.amplitude_to_db(S_full, ref = np.max), y_axis = 'log', x_axis = 'time', sr = self.sample_rate)
         plt.show()
 
-    def convert_to_png(self):
-        pass
+    def convert_to_png(self, filename_path):
+        cmap = plt.get_cmap('inferno')
+        plt.specgram(self.audio_file, NFFT=2048, Fs=2, Fc=0, noverlap=128, cmap=cmap, sides='default', mode='default', scale='dB')
+        plt.axis('off')
+        plt.savefig(f'{filename_path[:-3].replace(".", "")}.png')
+        plt.clf()
     
     def mfcc(self):
         # Compute audio signal mfcc
@@ -133,7 +137,9 @@ class AudioPreprocessing():
 if __name__ == "__main__":
 
     # Import audio data
-    PATH = os.path.join(os.getcwd(), 'welcome.wav')
+    path = os.path.chdir("..")
+    PATH = os.join.path(path, "Data")
+    
     audio_data, sample_rate = import_audio(PATH)
 
     # Crop audio and plot it
@@ -141,3 +147,9 @@ if __name__ == "__main__":
     audio.crop_audio(threshold = 0.001)
     audio.spectrogram_transform()
 
+# for all files in Data
+# audio_data, sample_rate = import_audio(PATH TO FILE)
+# file = AudioPreprocessing("filename", audio_date, sample_rate)
+# file.crop_audio(threshold = 0.001)
+# file.spectrogram()
+# 
