@@ -5,14 +5,12 @@ import librosa.display
 import os
 
 
-
 def import_audio(path):
     if os.path.exists(path):
         audio_data, sample_rate = librosa.load(path)
         return audio_data, sample_rate
     else:
         raise FileNotFoundError 
-
 
 class AudioPreprocessing():
 
@@ -45,13 +43,6 @@ class AudioPreprocessing():
             self.audio_file = final
     
         return self
-
-    def spectrogram(self):
-        S_full, phase = librosa.magphase(librosa.stft(self.audio_file))
-
-        plt.figure(figsize = (12, 4))
-        librosa.display.specshow(librosa.amplitude_to_db(S_full, ref = np.max), y_axis = 'log', x_axis = 'time', sr = self.sample_rate)
-        plt.show()
 
     def convert_to_png(self, filename_path):
         cmap = plt.get_cmap('inferno')
@@ -133,23 +124,3 @@ class AudioPreprocessing():
         plt.tight_layout()
         plt.show()
 
-
-if __name__ == "__main__":
-
-    # Import audio data
-    path = os.path.chdir("..")
-    PATH = os.join.path(path, "Data")
-    
-    audio_data, sample_rate = import_audio(PATH)
-
-    # Crop audio and plot it
-    audio = AudioPreprocessing("Welcome", audio_data, sample_rate)
-    audio.crop_audio(threshold = 0.001)
-    audio.spectrogram_transform()
-
-# for all files in Data
-# audio_data, sample_rate = import_audio(PATH TO FILE)
-# file = AudioPreprocessing("filename", audio_date, sample_rate)
-# file.crop_audio(threshold = 0.001)
-# file.spectrogram()
-# 
