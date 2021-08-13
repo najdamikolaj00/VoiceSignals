@@ -25,6 +25,8 @@ Computing the time variable for visualization
 
 frames = range(len(spectral_centroids))
 t = librosa.frames_to_time(frames)
+
+
 '''
 Normalising the spectral centroid for visualisation
 '''
