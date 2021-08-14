@@ -58,6 +58,10 @@ class AudioPreprocessing():
     def fft(self):
         # Compute Fourier transform
         return np.fft.fft(self.audio_file)
+
+    def chroma_feature(self):
+        # Compute chroma-feature
+        return librosa.feature.chroma_stft(audio_data, sr = sample_rate)
     
     def plot_mfcc(self):
         # Plot mfcc transform
