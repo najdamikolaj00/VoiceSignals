@@ -131,4 +131,3 @@ class AudioPreprocessing():
         plt.colorbar()
         plt.tight_layout()
         plt.show()
-
