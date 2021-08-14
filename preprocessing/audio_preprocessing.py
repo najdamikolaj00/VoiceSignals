@@ -61,7 +61,11 @@ class AudioPreprocessing():
 
     def chroma_feature(self):
         # Compute chroma-feature
-        return librosa.feature.chroma_stft(audio_data, sr = sample_rate)
+        return librosa.feature.chroma_stft(self.audio_file, sr = self.sample_rate)
+    
+    def zero_crossing_rate(self):
+        # Compute zero_crossing_rate
+        return librosa.zero_crossings(self.audio_file, pad = False)
     
     def plot_mfcc(self):
         # Plot mfcc transform
