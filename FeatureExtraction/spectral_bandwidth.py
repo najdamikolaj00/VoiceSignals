@@ -16,7 +16,8 @@ audio_data, sample_rate = librosa.load(r'Data\sober\mikolajsober1.wav')
 
 spectral_bandwidth_2 = librosa.feature.spectral_bandwidth(audio_data + 0.01 , sr = sample_rate)[0]#returns an array with columns equal
 #to number of frames in sample
-spectral_bandwidth_3 = librosa.feature.spectral_bandwidth(audio_data + 0.01, sr = sample_rate, p = 3)[0]
+spectral_bandwidth_3 = librosa.feature.spectral_bandwidth(audio_data + 0.01, sr = sample_rate, p = 3)[0]#p parameter is the power
+# to raise deviation from spectral centroid - moc zwiększająca odchylenie od środka ciężkości widma
 spectral_bandwidth_4 = librosa.feature.spectral_bandwidth(audio_data + 0.01, sr = sample_rate, p = 4)[0]
 #shape_of_spectral_centroids = spectral_centroids.shape #use only if you want to know the shape
 

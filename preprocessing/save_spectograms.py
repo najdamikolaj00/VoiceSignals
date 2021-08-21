@@ -4,6 +4,7 @@ Function for saving spectograms as .png files.
 '''
 import os
 from audio_preprocessing import import_audio, AudioPreprocessing
+from converter import converter
 
 def save_spectrograms():
     os.chdir("..")
