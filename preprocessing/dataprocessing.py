@@ -1,45 +1,42 @@
 '''
 Data preprocessing, building an ANN model and fit the model
 '''
+import numpy as np
 import pandas as pd
-# import numpy as np
-# import matplotlib.pyplot as plt
-# import os
-# from PIL import Image
-# import pathlib
-# import csv 
-# from sklearn.model_selection import train_test_split
-# from sklearn.preprocessing import LabelEncoder, StandardScaler
-# import keras
-# from keras import layers
-# from keras.models import Sequential 
-# import warnings
-# warnings.filterwarnings('ignore')
-# from save_spectograms import save_spectrograms
-# from converter import converter
-
+from sklearn.metrics import mean_absolute_error
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder, StandardScaler
 
 data = pd.read_csv('dataset.csv')
-# data.head()# Dropping unneccesary columns
+data.head()# Dropping unneccesary columns
 data = data.drop(['filename'],axis=1)#Encoding the Labels
-print(data.head())
-# genre_list = data.iloc[:, -1]
-# encoder = LabelEncoder()
-# y = encoder.fit_transform(genre_list)#Scaling the Feature columns
-# scaler = StandardScaler()
-# X = scaler.fit_transform(np.array(data.iloc[:, :-1], dtype = float))#Dividing data into training and Testing set
-# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+sobriety_list = data.iloc[:, -1]
+encoder = LabelEncoder()
+y = encoder.fit_transform(sobriety_list)#Scaling the Feature columns
+scaler = StandardScaler()
+X = scaler.fit_transform(np.array(data.iloc[:, :-1], dtype = float))#Dividing data into training and Testing set
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state = 5)
 
-# model = Sequential()
-# model.add(layers.Dense(256, activation='relu', input_shape=(X_train.shape[1],)))
-# model.add(layers.Dense(128, activation='relu'))
-# model.add(layers.Dense(64, activation='relu'))
-# model.add(layers.Dense(10, activation='softmax'))
-# model.compile(optimizer='adam',
-#               loss='sparse_categorical_crossentropy',
-#               metrics=['accuracy'])
+def get_mae(maximum_n_estimators, train_X, val_X, train_y, val_y):
+    model = RandomForestClassifier(n_estimators = maximum_n_estimators, max_depth = 3, random_state = 8)
+    model.fit(train_X, train_y)
+    prediction_values = model.predict(val_X)
+    mae = mean_absolute_error(val_y, prediction_values)
+    return mae
 
-# classifier = model.fit(X_train,
-#                     y_train,
-#                     epochs=10,
-#                     batch_size=128)
+best_one = []
+candidate_n_estimators = list(range(150, 160))
+
+for i in candidate_n_estimators:
+    my_mae = get_mae(i, X_train, X_test, y_train, y_test)
+    best_one.append(my_mae)
+
+best = min(best_one)
+index_best = 0
+
+for i in range(len(best_one)):
+    if best_one[i] == best:
+        index_best = i
+   
+print('Smallest MAE:', np.around(best, decimals = 5)*100 ,'% for the:', candidate_n_estimators[index_best], 'number of trees in the forest.')

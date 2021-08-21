@@ -5,18 +5,9 @@ Here I will try comples feature extraction, building and fit the model
 Importing required libraries
 '''
 import librosa
-import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 import os
-from PIL import Image
-import pathlib
 import csv 
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder, StandardScaler
-import keras
-from keras import layers
-from keras.models import Sequential 
 import warnings
 warnings.filterwarnings('ignore')
 from save_spectograms import save_spectrograms
