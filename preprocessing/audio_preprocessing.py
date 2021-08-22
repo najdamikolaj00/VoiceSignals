@@ -42,7 +42,7 @@ class AudioPreprocessing():
             final = np.flip(right_deleted)
             self.audio_file = final
     
-        return self
+        return self.audio_file
 
     def convert_to_png(self, filename_path):
         cmap = plt.get_cmap('inferno')
