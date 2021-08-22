@@ -1,5 +1,5 @@
 '''
-Here I will try comples feature extraction, building and fit the model 
+Here I will try complex feature extraction, building and fit the model 
 '''
 '''
 Importing required libraries
