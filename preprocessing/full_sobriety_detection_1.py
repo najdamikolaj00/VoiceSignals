@@ -49,8 +49,8 @@ Feature extraction
 '''
 
 for s in sobriety:
-    for filename in os.listdir(f'C:/Users/mikol/Projekty/VoiceSignals/VoiceSignals/Data/' + s):
-        audioname = f'C:/Users/mikol/Projekty/VoiceSignals/VoiceSignals/Data/' + s + '/' + filename
+    for filename in os.listdir(f'C:/Users/mikol/Projekty/VoiceSignals/VoiceSignals/Datano2/' + s):
+        audioname = f'C:/Users/mikol/Projekty/VoiceSignals/VoiceSignals/Datano2/' + s + '/' + filename
         y, sr = librosa.load(audioname, mono = True, duration = 30)
 
         chroma_stft = librosa.feature.chroma_stft(y = y, sr = sr)
@@ -95,7 +95,7 @@ def get_mae(maximum_n_estimators, train_X, val_X, train_y, val_y):
     return mae
 
 best_one = []
-candidate_n_estimators = list(range(150, 160))
+candidate_n_estimators = list(range(15, 17))
 
 for i in candidate_n_estimators:
     my_mae = get_mae(i, X_train, X_test, y_train, y_test)

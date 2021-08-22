@@ -7,10 +7,9 @@ from pydub import AudioSegment
 import os
 
 def converter():
-    rootdir = 'Data'
+    rootdir = 'Datano2'
     for subdir, dirs, files in os.walk(rootdir):
         for filename in files:
-            print(files)
             if filename.endswith('.wav'):
                 continue
             else:
@@ -18,7 +17,6 @@ def converter():
                 , filename.split(".")[0] + '.wav'), format = 'wav')
                 os.remove((os.path.join(subdir, filename)))
                 
-
 
 
 
