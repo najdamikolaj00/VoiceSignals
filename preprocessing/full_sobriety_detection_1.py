@@ -48,9 +48,12 @@ sobriety = 'sober unsober'.split()
 Feature extraction
 '''
 
+PARENT = os.path.dirname(os.getcwd())
+DIRECTORY = os.path.join(PARENT, "Datano2")
+
 for s in sobriety:
-    for filename in os.listdir(f'C:/Users/mikol/Projekty/VoiceSignals/VoiceSignals/Datano2/' + s):
-        audioname = f'C:/Users/mikol/Projekty/VoiceSignals/VoiceSignals/Datano2/' + s + '/' + filename
+    for filename in os.listdir(os.path.join(DIRECTORY, s)):
+        audioname = os.path.join(DIRECTORY, s, filename)
         y, sr = librosa.load(audioname, mono = True, duration = 30)
 
         chroma_stft = librosa.feature.chroma_stft(y = y, sr = sr)
@@ -73,15 +76,17 @@ for s in sobriety:
 Data preprocessing
 '''
 
-data = pd.read_csv('dataset01.csv')
-data.head()# Dropping unneccesary columns
-data = data.drop(['filename'],axis=1)#Encoding the Labels
-sobriety_list = data.iloc[:, -1]
-encoder = LabelEncoder()
-y = encoder.fit_transform(sobriety_list)#Scaling the Feature columns
-scaler = StandardScaler()
-X = scaler.fit_transform(np.array(data.iloc[:, :-1], dtype = float))#Dividing data into training and Testing set
-X_train, X_test, y_train, y_test = train_test_split(X, y, random_state = 5)
+def transform_data(filename): 
+    data = pd.read_csv(filename)
+    data.head() # Dropping unneccesary columns
+    data = data.drop(['filename'], axis=1) #Encoding the Labels
+    sobriety_list = data.iloc[:, -1]
+    encoder = LabelEncoder()
+    y = encoder.fit_transform(sobriety_list)#Scaling the Feature columns
+    scaler = StandardScaler()
+    X = scaler.fit_transform(np.array(data.iloc[:, :-1], dtype = float))#Dividing data into training and Testing set
+    X_train, X_test, y_train, y_test = train_test_split(X, y, random_state = 5)
+    return X_train, X_test, y_train, y_test
 
 '''
 Function for getting mean absolute error/trying to find best n_estimators number
@@ -96,6 +101,7 @@ def get_mae(maximum_n_estimators, train_X, val_X, train_y, val_y):
 
 best_one = []
 candidate_n_estimators = list(range(15, 17))
+X_train, X_test, y_train, y_test = transform_data('dataset01.csv')
 
 for i in candidate_n_estimators:
     my_mae = get_mae(i, X_train, X_test, y_train, y_test)
