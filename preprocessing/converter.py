@@ -18,5 +18,5 @@ def converter():
                 os.remove((os.path.join(subdir, filename)))
                 
 
-
+converter()
 
