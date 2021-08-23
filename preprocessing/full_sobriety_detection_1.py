@@ -30,51 +30,51 @@ Next important step is to crop audio. After this audio file will include only so
 '''
 
 '''
-# Creating header file for .csv
-# '''
-# header = 'filename chroma_stft spectral_centroid spectral_bandwidth rolloff zero_crossing_rate'
-# for i in range(1, 21):
-#     header += f' mfcc{i}'
-# header += ' label'
-# header = header.split()
+Creating header file for .csv
+'''
+header = 'filename chroma_stft spectral_centroid spectral_bandwidth rolloff zero_crossing_rate'
+for i in range(1, 21):
+    header += f' mfcc{i}'
+header += ' label'
+header = header.split()
 
-# file = open('dataset01.csv', 'w', newline='')
-# with file:
-#     writer = csv.writer(file)
-#     writer.writerow(header)
-# sobriety = 'sober unsober'.split()
+file = open('dataset01.csv', 'w', newline='')
+with file:
+    writer = csv.writer(file)
+    writer.writerow(header)
+sobriety = 'sober unsober'.split()
 
-# '''
-# Feature extraction
-# '''
+'''
+Feature extraction
+'''
 
-# PARENT = os.path.dirname(os.getcwd())
-# DIRECTORY = os.path.join(PARENT, "VoiceSignals\\Datano2")
+PARENT = os.path.dirname(os.getcwd())
+DIRECTORY = os.path.join(PARENT, "VoiceSignals\\Datano2")
 
-# for s in sobriety:
-#     for filename in os.listdir(os.path.join(DIRECTORY, s)):
-#         audioname = os.path.join(DIRECTORY, s, filename)
-#         y, sr = librosa.load(audioname, mono = True, duration = 30)
+for s in sobriety:
+    for filename in os.listdir(os.path.join(DIRECTORY, s)):
+        audioname = os.path.join(DIRECTORY, s, filename)
+        y, sr = librosa.load(audioname, mono = True, duration = 30)
 
-#         chroma_stft = librosa.feature.chroma_stft(y = y, sr = sr)
-#         spec_cent = librosa.feature.spectral_centroid(y = y, sr = sr)
-#         spec_bw = librosa.feature.spectral_bandwidth(y = y, sr = sr)
-#         rolloff = librosa.feature.spectral_rolloff(y = y, sr = sr)
-#         zcr = librosa.feature.zero_crossing_rate(y)
-#         mfcc = librosa.feature.mfcc(y = y, sr = sr)
+        chroma_stft = librosa.feature.chroma_stft(y = y, sr = sr)
+        spec_cent = librosa.feature.spectral_centroid(y = y, sr = sr)
+        spec_bw = librosa.feature.spectral_bandwidth(y = y, sr = sr)
+        rolloff = librosa.feature.spectral_rolloff(y = y, sr = sr)
+        zcr = librosa.feature.zero_crossing_rate(y)
+        mfcc = librosa.feature.mfcc(y = y, sr = sr)
 
-#         to_append = f'{filename} {np.mean(chroma_stft)} {np.mean(spec_cent)} {np.mean(spec_bw)} {np.mean(rolloff)} {np.mean(zcr)}'    
-#         for e in mfcc:
-#             to_append += f' {np.mean(e)}'
-#         to_append += f' {s}'
-#         file = open('dataset01.csv', 'a', newline='')
-#         with file:
-#             writer = csv.writer(file)
-#             writer.writerow(to_append.split())
+        to_append = f'{filename} {np.mean(chroma_stft)} {np.mean(spec_cent)} {np.mean(spec_bw)} {np.mean(rolloff)} {np.mean(zcr)}'    
+        for e in mfcc:
+            to_append += f' {np.mean(e)}'
+        to_append += f' {s}'
+        file = open('dataset01.csv', 'a', newline='')
+        with file:
+            writer = csv.writer(file)
+            writer.writerow(to_append.split())
 
-# '''
-# Data preprocessing
-# '''
+'''
+Data preprocessing
+'''
 
 def transform_data(filename): 
     data = pd.read_csv(filename)
