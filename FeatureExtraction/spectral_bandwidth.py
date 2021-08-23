@@ -12,7 +12,8 @@ import matplotlib.pyplot as plt
 import librosa.display
 
 
-audio_data, sample_rate = librosa.load(r'Data\sober\mikolajsober1.wav')
+# audio_data, sample_rate = librosa.load(r'C:\Users\mikol\Projekty\VoiceSignals\VoiceSignals\Datano2\sober\sylwiasober2.wav')
+audio_data, sample_rate = librosa.load(r'C:\Users\mikol\Projekty\VoiceSignals\VoiceSignals\Datano2\unsober\sylwiaunsober1.wav')
 
 spectral_bandwidth_2 = librosa.feature.spectral_bandwidth(audio_data + 0.01 , sr = sample_rate)[0]#returns an array with columns equal
 #to number of frames in sample

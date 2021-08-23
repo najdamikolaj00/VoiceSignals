@@ -87,7 +87,7 @@ def main():
             mood = input('\nmood: ')
             list_of_moods.append(mood)
             sample_num = input('\nnumber of sample (from 1 to 4): ')
-            path = 'DataVoices/' + str(mood) + '/'
+            path = 'Datano2/' + str(mood) + '/'
             data = str(name) + str(mood) + str(sample_num) + '.wav'
             path = os.path.join(path, data)
             list_of_paths.append(path)
@@ -102,7 +102,7 @@ def main():
         if (freq_choice is not 'linear' or freq_choice is not 'log'):
             raise ValueError('Error, wrong number!!!')
         else:
-            audio_path = 'DataVoices/' + str(mood) + '/' + str(name) + str(mood) + str(sample_num) + '.wav'
+            audio_path = 'Datano2/' + str(mood) + '/' + str(name) + str(mood) + str(sample_num) + '.wav'
             spectogram(audio_path, freq_choice)
 
 if __name__ == '__main__':

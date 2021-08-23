@@ -13,8 +13,8 @@ import matplotlib.pyplot as plt
 import librosa.display
 
 
-audio_data, sample_rate = librosa.load(r'Data\sober\mikolajsober1.wav')
-
+audio_data, sample_rate = librosa.load(r'C:\Users\mikol\Projekty\VoiceSignals\VoiceSignals\Datano2\sober\sylwiasober2.wav')
+# audio_data, sample_rate = librosa.load(r'C:\Users\mikol\Projekty\VoiceSignals\VoiceSignals\Datano2\unsober\sylwiaunsober1.wav')
 spectral_centroids = librosa.feature.spectral_centroid(audio_data, sr = sample_rate)[0]#returns an array with columns equal
 #to number of frames in sample
 #shape_of_spectral_centroids = spectral_centroids.shape #use only if you want to know the shape
