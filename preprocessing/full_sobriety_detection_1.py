@@ -23,7 +23,7 @@ from converter import converter
 Converting files with different extension than .wav using our-made function converter()
 '''
 
-converter() # This function doesn't need any arguments because it will check all files in the Data dict and it will return .wav files
+#converter() # This function doesn't need any arguments because it will check all files in the Data dict and it will return .wav files
 
 '''
 Next important step is to crop audio. After this audio file will include only sound without breakes at the beggining and in the end.
@@ -49,7 +49,7 @@ Feature extraction
 '''
 
 PARENT = os.path.dirname(os.getcwd())
-DIRECTORY = os.path.join(PARENT, "Datano2")
+DIRECTORY = os.path.join(PARENT, "VoiceSignals\\Datano2")
 
 for s in sobriety:
     for filename in os.listdir(os.path.join(DIRECTORY, s)):
