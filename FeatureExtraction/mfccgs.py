@@ -7,7 +7,8 @@ import librosa
 import librosa.display
 import matplotlib.pyplot as plt
 
-audio_data, sample_rate = librosa.load(r'Data\sober\mikolajsober1.wav')
+# audio_data, sample_rate = librosa.load(r'C:\Users\mikol\Projekty\VoiceSignals\VoiceSignals\Datano2\sober\sylwiasober2.wav')
+audio_data, sample_rate = librosa.load(r'C:\Users\mikol\Projekty\VoiceSignals\VoiceSignals\Datano2\unsober\sylwiaunsober1.wav')
 mfccs = librosa.feature.mfcc(audio_data, sr = sample_rate)
 #print(mfccs.shape)#if necessary
 plt.figure(figsize=(12, 4))

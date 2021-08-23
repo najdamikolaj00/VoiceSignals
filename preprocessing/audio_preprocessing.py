@@ -50,6 +50,7 @@ class AudioPreprocessing():
         plt.axis('off')
         plt.savefig(f'{filename_path[:-3].replace(".", "")}.png')
         plt.clf()
+        
     
     def mfcc(self):
         # Compute audio signal mfcc

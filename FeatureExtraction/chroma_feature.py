@@ -7,7 +7,8 @@ import librosa
 import librosa.display
 import matplotlib.pyplot as plt
 
-audio_data, sample_rate = librosa.load(r'Data\sober\mikolajsober1.wav')
+# audio_data, sample_rate = librosa.load(r'C:\Users\mikol\Projekty\VoiceSignals\VoiceSignals\Datano2\sober\sylwiasober2.wav')
+audio_data, sample_rate = librosa.load(r'C:\Users\mikol\Projekty\VoiceSignals\VoiceSignals\Datano2\unsober\sylwiaunsober1.wav')
 chromagram = librosa.feature.chroma_stft(audio_data, sr = sample_rate)
 plt.figure(figsize=(12, 4))
 librosa.display.specshow(chromagram, x_axis='time', y_axis='chroma', cmap='coolwarm')
