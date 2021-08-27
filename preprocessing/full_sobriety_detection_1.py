@@ -4,12 +4,10 @@ This program will show processing of audio files from scratch.
 '''
 Importing necessary libraries
 '''
-import librosa
 import numpy as np
 import pandas as pd
 import os
 import csv
-from pydub import AudioSegment 
 import warnings
 warnings.filterwarnings('ignore')
 from sklearn.metrics import mean_absolute_error
@@ -17,13 +15,11 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 # our libraries
-from converter import converter
+from preprocessing_audio_for_detection import AudioPreprocessing
 
 '''
 Converting files with different extension than .wav using our-made function converter()
 '''
-
-#converter() # This function doesn't need any arguments because it will check all files in the Data dict and it will return .wav files
 
 '''
 Next important step is to crop audio. After this audio file will include only sound without breakes at the beggining and in the end.
@@ -42,27 +38,23 @@ file = open('dataset01.csv', 'w', newline='')
 with file:
     writer = csv.writer(file)
     writer.writerow(header)
+
+
 sobriety = 'sober unsober'.split()
 
 '''
 Feature extraction
 '''
-
 PARENT = os.path.dirname(os.getcwd())
 DIRECTORY = os.path.join(PARENT, "VoiceSignals\\Datano2")
 
 for s in sobriety:
     for filename in os.listdir(os.path.join(DIRECTORY, s)):
-        audioname = os.path.join(DIRECTORY, s, filename)
-        y, sr = librosa.load(audioname, mono = True, duration = 30)
+        
+        audio_object = AudioPreprocessing(os.path.join(DIRECTORY, s, filename), 0.01)
+        croped_audio_data, sample_rate = audio_object.preprocessing()
 
-        chroma_stft = librosa.feature.chroma_stft(y = y, sr = sr)
-        spec_cent = librosa.feature.spectral_centroid(y = y, sr = sr)
-        spec_bw = librosa.feature.spectral_bandwidth(y = y, sr = sr)
-        rolloff = librosa.feature.spectral_rolloff(y = y, sr = sr)
-        zcr = librosa.feature.zero_crossing_rate(y)
-        mfcc = librosa.feature.mfcc(y = y, sr = sr)
-
+        chroma_stft, spec_cent, spec_bw, rolloff, zcr, mfcc = audio_object.features(croped_audio_data, sample_rate)
         to_append = f'{filename} {np.mean(chroma_stft)} {np.mean(spec_cent)} {np.mean(spec_bw)} {np.mean(rolloff)} {np.mean(zcr)}'    
         for e in mfcc:
             to_append += f' {np.mean(e)}'
