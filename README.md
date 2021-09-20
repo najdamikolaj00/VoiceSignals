@@ -1,11 +1,7 @@
-# Student's project - analysis of human voice using Machine Learning
-## Trying to recognise when someone is drunk by analyzing his voice
+<h2>Freelancer's project - analysis of human voice</h2>
+<h4>The main goal of this project is to create the tool for sobriety detection</h4>
 
-***
-
-**Diagram** --> shows how our program works. 
-
-***
+<h3><strong>Diagram</strong>shows how our program works.</h3>
 
 <img src = "Code/photos/voicesignalsdiagram.png" width = "600" >
 
