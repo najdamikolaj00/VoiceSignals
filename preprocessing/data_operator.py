@@ -63,24 +63,20 @@ class Data_operator(object):
 
     def save_features_to_csv(self):
         
-        sobriety = 'sober unsober'.split()
+        for i in range(len(self.data['sobriety'])):
 
-        PARENT = os.path.dirname(os.getcwd())
-        DIRECTORY = os.path.join(PARENT, "VoiceSignals\\data_test2")
-        
-        audio_object = Data_features(self.data)
-        
-        for s in sobriety:
-            for filename in os.listdir(os.path.join(DIRECTORY, s)):
+            audio_object = Data_features(self.data['audio_data'][i], self.data['sample_rate'][i])
+            chroma_stft, spec_cent, spec_bw, rolloff, zcr, mfcc = audio_object.features()
+            
+            filename = self.data['sobriety'][i] + [i]
+            to_append = f'{filename} {np.mean(chroma_stft)} {np.mean(spec_cent)} {np.mean(spec_bw)} {np.mean(rolloff)} {np.mean(zcr)}'    
+            for e in mfcc:
+                to_append += f' {np.mean(e)}'
+            to_append += " {}".format(self.data['sobriety'][i])
+            file = open('dataset.csv', 'a', newline='')
+            with file:
+                writer = csv.writer(file)
+                writer.writerow(to_append.split())
 
-                chroma_stft, spec_cent, spec_bw, rolloff, zcr, mfcc = audio_object.features()
-                to_append = f'{filename} {np.mean(chroma_stft)} {np.mean(spec_cent)} {np.mean(spec_bw)} {np.mean(rolloff)} {np.mean(zcr)}'    
-                for e in mfcc:
-                    to_append += f' {np.mean(e)}'
-                to_append += f' {s}'
-                file = open('dataset.csv', 'a', newline='')
-                with file:
-                    writer = csv.writer(file)
-                    writer.writerow(to_append.split())
     def save_results(self):
         pass
