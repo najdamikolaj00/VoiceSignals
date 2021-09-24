@@ -7,13 +7,14 @@ Steps to make:
 5. Save features to a csv file
 6. Data preprocessing
 7. Model approach
-8. Check the scores
+8. Check the scores, save results
 9. Save the results and find different solutions of data preprocessing (so back to step 6.)
 
 Program will contain classes responsible for different steps 
 First class --> steps: 1, 2, 3, 5, 9.
-Second class --> steps: 4, 6.
-Third class --> steps: 7, 8.
+Second class --> steps: 4.
+Third class --> steps: 6.
+Fourth class --> steps: 7, 8.
 '''
 def main():
 
