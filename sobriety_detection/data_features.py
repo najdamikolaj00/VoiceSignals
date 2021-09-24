@@ -6,7 +6,6 @@ Steps to cover:
 '''
 
 import librosa
-from librosa.core import audio
 
 class Data_features(object):
 
