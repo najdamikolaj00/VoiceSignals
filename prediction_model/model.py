@@ -23,6 +23,7 @@ import splitfolders
 # from keras.layers import Activation, Dense, Dropout, Conv2D, Flatten, MaxPooling2D, GlobalMaxPooling2D, GlobalAveragePooling1D, AveragePooling2D, Input, Add
 # from keras.models import Sequential
 # from keras.optimizers import SGD
+from keras.preprocessing.image import ImageDataGenerator
 
 
 # HOW DOES IT WORK?
@@ -60,9 +61,28 @@ class Sobriety():
 
         splitfolders.ratio('./classification_data/', output= "./model_input", seed = 1337, ratio = (.8, .2)) 
     
+    def image_augmentation(self):
+        """ Perform image augmentation and increase the size of the training set """
+        
+        train_datagen = ImageDataGenerator(
+        rescale=1./255,       # Rescale all pixel values from 0-255, so after this step all the pixel values are in range (0,1)
+        shear_range=0.2,      # Apply random transformations
+        zoom_range=0.2,       # Apply zoom
+        horizontal_flip=True) # Flip horizontally = ImageDataGenerator(rescale=1./255)
+
+        training_set = train_datagen.flow_from_directory('./model_input/train', target_size=(64, 64),
+                                                                         batch_size=32,
+                                                                         class_mode='categorical',
+                                                                         shuffle = False)
+        
+        test_set = test_datagen.flow_from_directory('./model_input/val', target_size=(64, 64),
+                                                                  batch_size=32,
+                                                                  class_mode='categorical',
+                                                                  shuffle = False )
+
     def fit(self, x_train, y_train):
         """ Fit train data to the model """
-        pass
+        
 
     def predict(self, x_test, y_test):
         """ Classify new data based on the test dataset """
