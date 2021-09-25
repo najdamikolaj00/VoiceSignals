@@ -16,10 +16,14 @@ Second class --> steps: 4.
 Third class --> steps: 6.
 Fourth class --> steps: 7, 8.
 '''
+
+from data_operator import Data_Operator
+
+
 def main():
 
-
-    pass
+    obj = Data_operator('data_test2')
+    obj.import_audio()
 
 
 if __name__ == '__main__':

@@ -14,11 +14,11 @@ import numpy as np
 from pydub import AudioSegment
 from data_features import Data_features
 
-class Data_operator(object):
+class Data_Operator(object):
 
     def __init__(self):
         self.data = collections.defaultdict(list) # import audio data and sample rate to dictionary
-        
+
 
     def import_audio(self):
         # import audio data and sample rate to dictionary
@@ -54,8 +54,7 @@ class Data_operator(object):
         header += ' label'
         header = header.split()
 
-        file = open('dataset.csv', 'w', newline='')
-        with file:
+        with open('dataset.csv', 'w', newline = '') as file:
             writer = csv.writer(file)
             writer.writerow(header)
 
