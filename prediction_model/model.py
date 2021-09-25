@@ -41,11 +41,12 @@ class Sobriety():
 
     def __init__(self):
         """ Constructor """
-        pass
+        self.training_set = Sequential()
+        self.test_set = Sequential()
 
 
-     def load_data(self):
-         """ Load the spectrogram data to the class """
+    def load_data(self):
+        """ Load the spectrogram data to the class """
 
         PATH = "../spectrograms"
         for instance in ['sober', 'intoxicated']:
@@ -61,24 +62,30 @@ class Sobriety():
 
         splitfolders.ratio('./classification_data/', output= "./model_input", seed = 1337, ratio = (.8, .2)) 
     
+    
     def image_augmentation(self):
         """ Perform image augmentation and increase the size of the training set """
         
-        train_datagen = ImageDataGenerator(
-        rescale=1./255,       # Rescale all pixel values from 0-255, so after this step all the pixel values are in range (0,1)
-        shear_range=0.2,      # Apply random transformations
-        zoom_range=0.2,       # Apply zoom
-        horizontal_flip=True) # Flip horizontally = ImageDataGenerator(rescale=1./255)
+        train_datagen = ImageDataGenerator(rescale=1./255,       # Rescale all pixel values from 0-255, so after this step all the pixel values are in range (0,1)
+                                           shear_range=0.2,      # Apply random transformations
+                                           zoom_range=0.2,       # Apply zoom
+                                           horizontal_flip=True) # Flip horizontally = ImageDataGenerator(rescale=1./255)
 
-        training_set = train_datagen.flow_from_directory('./model_input/train', target_size=(64, 64),
+        test_datagen = ImageDataGenerator( rescale=1./255,       # Rescale all pixel values from 0-255, so after this step all the pixel values are in range (0,1)
+                                           shear_range=0.2,      # Apply random transformations
+                                           zoom_range=0.2,       # Apply zoom
+                                           horizontal_flip = True) # Flip horizontally = ImageDataGenerator(rescale=1./255)
+
+        self.training_set = train_datagen.flow_from_directory('./model_input/train', target_size=(64, 64),
                                                                          batch_size=32,
-                                                                         class_mode='categorical',
+                                                                         class_mode='binary',
                                                                          shuffle = False)
         
-        test_set = test_datagen.flow_from_directory('./model_input/val', target_size=(64, 64),
+        self.test_set = test_datagen.flow_from_directory('./model_input/val', target_size=(64, 64),
                                                                   batch_size=32,
-                                                                  class_mode='categorical',
+                                                                  class_mode='binary',
                                                                   shuffle = False )
+
 
     def compile_network(self):
         """ Fit train data to the model """
@@ -100,7 +107,8 @@ class Sobriety():
         model.add(Activation('relu'))
         model.add(Dropout(rate=0.5))#Output layer
         model.add(Dense(10))
-        model.add(Activation('softmax'))model.summary()
+        model.add(Activation('softmax'))
+        model.summary()
 
         epochs = 200
         batch_size = 8
@@ -110,12 +118,33 @@ class Sobriety():
         sgd = SGD(lr=learning_rate, momentum=momentum, decay=decay_rate, nesterov=False)
         model.compile(optimizer="sgd", loss="categorical_crossentropy", metrics=['accuracy'])
         
+        model.fit_generator(self.training_set,
+                            steps_per_epoch=100,
+                            epochs=50,
+                            validation_data = self.test_set,
+                            validation_steps=200)
 
-    def predict(self, x_test, y_test):
+    def predict(self):
         """ Classify new data based on the test dataset """
-        pass
+        self.test_set.reset()
+        pred = model.predict_generator(self.test_set, steps=50, verbose=1)
+        predicted_class_indices = np.argmax(pred, axis=1)
+        labels = (self.training_set.class_indices)
+        labels = dict((v,k) for k,v in labels.items())
+        predictions = [labels[k] for k in predicted_class_indices]
+        predictions = predictions[:200]
+        filenames = self.test_set.filenames
+        results = pd.DataFrame({"Filename":filenames, "Predictions":predictions}, orient='index')
+        results.to_csv("prediction_results.csv",index=False)
+
 
 if __name__ == "__main__":
+    
+    model = Sobriety()
+    model.load_data()
+    model.image_augmentation()
+    model.compile_network()
+    model.predict()
     
    
 
