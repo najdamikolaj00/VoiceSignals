@@ -8,15 +8,17 @@ from the collected samples
 # import random
 # import warnings
 import os
+import numpy as np
 # from PIL import Image
 import pathlib
 import shutil
 import splitfolders
-# import csv
+import csv
+import pandas as pd
 # # sklearn Preprocessing
 # from sklearn.model_selection import train_test_split
 # #Keras
-# import keras
+import keras
 # import warnings
 # warnings.filterwarnings('ignore')
 from keras import layers
@@ -43,6 +45,7 @@ class Sobriety():
         """ Constructor """
         self.training_set = Sequential()
         self.test_set = Sequential()
+        self.model = Sequential()
 
 
     def load_data(self):
@@ -76,66 +79,66 @@ class Sobriety():
                                            zoom_range=0.2,       # Apply zoom
                                            horizontal_flip = True) # Flip horizontally = ImageDataGenerator(rescale=1./255)
 
-        self.training_set = train_datagen.flow_from_directory('./model_input/train', target_size=(64, 64),
-                                                                         batch_size=32,
-                                                                         class_mode='binary',
-                                                                         shuffle = False)
+        self.training_set = train_datagen.flow_from_directory('./model_input/train', target_size = (64, 64),
+                                                                         batch_size = 8,
+                                                                         class_mode = 'binary',
+                                                                         shuffle = True)
         
-        self.test_set = test_datagen.flow_from_directory('./model_input/val', target_size=(64, 64),
-                                                                  batch_size=32,
-                                                                  class_mode='binary',
-                                                                  shuffle = False )
+        self.test_set = test_datagen.flow_from_directory('./model_input/val', target_size = (64, 64),
+                                                                  batch_size = 8,
+                                                                  class_mode = 'binary',
+                                                                  shuffle = True)
 
 
     def compile_network(self):
         """ Fit train data to the model """
 
-        model = Sequential()
-        input_shape=(64, 64, 3)#1st hidden layer
-        model.add(Conv2D(32, (3, 3), strides=(2, 2), input_shape=input_shape))
-        model.add(AveragePooling2D((2, 2), strides=(2,2)))
-        model.add(Activation('relu'))#2nd hidden layer
-        model.add(Conv2D(64, (3, 3), padding="same"))
-        model.add(AveragePooling2D((2, 2), strides=(2,2)))
-        model.add(Activation('relu'))#3rd hidden layer
-        model.add(Conv2D(64, (3, 3), padding="same"))
-        model.add(AveragePooling2D((2, 2), strides=(2,2)))
-        model.add(Activation('relu'))#Flatten
-        model.add(Flatten())
-        model.add(Dropout(rate=0.5))#Add fully connected layer.
-        model.add(Dense(64))
-        model.add(Activation('relu'))
-        model.add(Dropout(rate=0.5))#Output layer
-        model.add(Dense(10))
-        model.add(Activation('softmax'))
-        model.summary()
+        input_shape = (64, 64, 3)#1st hidden layer
+        self.model.add(Conv2D(32, (3, 3), strides = (2, 2), input_shape = input_shape))
+        self.model.add(AveragePooling2D((2, 2), strides = (2,2)))
+        self.model.add(Activation('relu'))#2nd hidden layer
+        self.model.add(Conv2D(64, (3, 3), padding = "same"))
+        self.model.add(AveragePooling2D((2, 2), strides = (2,2)))
+        self.model.add(Activation('relu'))#3rd hidden layer
+        self.model.add(Conv2D(64, (3, 3), padding = "same"))
+        self.model.add(AveragePooling2D((2, 2), strides = (2,2)))
+        self.model.add(Activation('relu'))#Flatten
+        self.model.add(Flatten())
+        self.model.add(Dropout(rate = 0.5))#Add fully connected layer.
+        self.model.add(Dense(64))
+        self.model.add(Activation('relu'))
+        self.model.add(Dropout(rate = 0.5))#Output layer
+        self.model.add(Dense(1))
+        self.model.add(Activation('softmax'))
+        self.model.summary()
 
         epochs = 200
-        batch_size = 8
+        batch_size = 2
         learning_rate = 0.01
         decay_rate = learning_rate / epochs
         momentum = 0.9
-        sgd = SGD(lr=learning_rate, momentum=momentum, decay=decay_rate, nesterov=False)
-        model.compile(optimizer="sgd", loss="categorical_crossentropy", metrics=['accuracy'])
+        sgd = SGD(lr = learning_rate, momentum = momentum, decay = decay_rate, nesterov = False)
+        self.model.compile(optimizer = "sgd", loss = "categorical_crossentropy", metrics = ['accuracy'])
         
-        model.fit_generator(self.training_set,
-                            steps_per_epoch=100,
-                            epochs=50,
+        self.model.fit(self.training_set,
+                            epochs = 50,
                             validation_data = self.test_set,
-                            validation_steps=200)
+                            validation_steps = 200)
+
+        print(self.model.evaluate(self.test_set, steps = 50))
 
     def predict(self):
         """ Classify new data based on the test dataset """
         self.test_set.reset()
-        pred = model.predict_generator(self.test_set, steps=50, verbose=1)
+        pred = self.model.predict(self.test_set, steps=50, verbose=1)
         predicted_class_indices = np.argmax(pred, axis=1)
         labels = (self.training_set.class_indices)
         labels = dict((v,k) for k,v in labels.items())
         predictions = [labels[k] for k in predicted_class_indices]
         predictions = predictions[:200]
         filenames = self.test_set.filenames
-        results = pd.DataFrame({"Filename":filenames, "Predictions":predictions}, orient='index')
-        results.to_csv("prediction_results.csv",index=False)
+        results = pd.DataFrame({"Filename": filenames, "Predictions": predictions})
+        results.to_csv("prediction_results.csv",index = False)
 
 
 if __name__ == "__main__":
