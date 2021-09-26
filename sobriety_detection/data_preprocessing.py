@@ -11,11 +11,15 @@ class Data_processing(object):
     def transform_data(self): 
         data = pd.read_csv(self.file_name)
         data.head() # Dropping unneccesary columns
-        data = data.drop(['filename'], axis=1) #Encoding the Labels
+        # data = data.drop(['filename'], axis=1) #Encoding the Labels
         sobriety_list = data.iloc[:, -1]
-        encoder = LabelEncoder()
-        y = encoder.fit_transform(sobriety_list)#Scaling the Feature columns
+        # encoder = LabelEncoder()
+        y = sobriety_list
+        # y = encoder.fit_transform(sobriety_list)#Scaling the Feature columns
         scaler = StandardScaler()
         X = scaler.fit_transform(np.array(data.iloc[:, :-1], dtype = float))#Dividing data into training and Testing set
         return y, X
+
+    def turn_up_data(self):
+        pass
         
