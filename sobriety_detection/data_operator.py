@@ -16,9 +16,10 @@ from data_features import Data_features
 
 class Data_operator(object):
 
-    def __init__(self, rootdir):
+    def __init__(self, rootdir, csvfilename):
 
         self.rootdir = rootdir
+        self.csvfilename = csvfilename
         self.data = collections.defaultdict(list)
 
     def make_csv_file(self):
@@ -28,7 +29,7 @@ class Data_operator(object):
         header += ' label'
         header = header.split()
 
-        file = open('dataset.csv', 'w', newline='')
+        file = open(self.csvfilename, 'w', newline='')
         with file:
             writer = csv.writer(file)
             writer.writerow(header)
@@ -46,7 +47,7 @@ class Data_operator(object):
             for e in mfcc:
                 to_append += f' {np.mean(e)}'
             to_append += " {}".format(self.data['sobriety'][i])
-            file = open('dataset.csv', 'a', newline='')
+            file = open(self.csvfilename, 'a', newline='')
             with file:
                 writer = csv.writer(file)
                 writer.writerow(to_append.split())
