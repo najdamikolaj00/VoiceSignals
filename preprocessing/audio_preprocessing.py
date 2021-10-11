@@ -26,7 +26,7 @@ class AudioPreprocessing(object):
     def import_audio(self):
         # import audio data and sample rate to dictionary
         # program sprawdzony działa w playground najda
-        rootdir = '../recordings'
+        rootdir = '../voice_data'
         for subdir, dirs, files in os.walk(rootdir):
             for filename in files:
                 if filename.endswith('.wav'):
@@ -41,7 +41,7 @@ class AudioPreprocessing(object):
                 self.data["sample_rate"].append(sample_rate)
                 self.data["sobriety"].append(subdir.split('\\')[-1])
     
-    
+
     def crop_audio(self, threshold, boundary = 'both'):
         # Crop audio to start with a threshold value
         def delete_treshold_segments(audio_file, threshold):
