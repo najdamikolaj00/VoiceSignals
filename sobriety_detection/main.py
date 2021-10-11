@@ -16,7 +16,6 @@ Second class --> steps: 4.
 Third class --> steps: 6.
 Fourth class --> steps: 7, 8.
 '''
-<<<<<<< HEAD
 
 from data_operator import Data_Operator
 
@@ -25,7 +24,6 @@ def main():
 
     obj = Data_operator('data_test2')
     obj.import_audio()
-=======
 
 from data_operator import Data_operator
 from data_preprocessing import Data_processing
@@ -72,7 +70,6 @@ def main():
     # obj_3.train_split(0.25, 1)
     # obj_3.feature_selection('ANOVA')
     obj_3.model_class_forest(12, 2, 5)
->>>>>>> 242cb8f1b9a34018a356940a10a174c092a454c3
 
     #Catboost approach accuracy//tmp out of use
     # obj_3 = Data_model(y, X, y_test, X_test)
