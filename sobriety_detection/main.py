@@ -29,44 +29,47 @@ def main():
     '''
     Data from August(model is learning on them):
     '''
-    obj = Data_operator('voice_data\data_test5', 'features_in_csv\datasetwojtek_august.csv')
+    '''
+    Second value required dict name and .csv file name like: (id)(age)(sex)(test) from csv file idagesextest.csv
+    '''
+    obj = Data_operator('voice_data', '145M1.csv')
     obj.import_audio()
 
     '''
     Data from Semptember(we are going to check accuracy of predicion values)
     '''
 
-    obj = Data_operator('voice_data\data_test6', 'features_in_csv\datasetwojtek_september.csv')
-    obj.import_audio()
+    # obj = Data_operator('voice_data\data_test6', 'features_in_csv\datasetwojtek_september.csv')
+    # obj.import_audio()
 
-    '''
-    Our data variables: 
-    Input variables 'numerical': all features are numerical variables
-    Output variable 'target(categorical)': sobriety =  sober or unsober
+    # '''
+    # Our data variables: 
+    # Input variables 'numerical': all features are numerical variables
+    # Output variable 'target(categorical)': sobriety =  sober or unsober
 
-    It means that feature selection method should be ANOVA or Kendall's
+    # It means that feature selection method should be ANOVA or Kendall's
 
-    ANOVA correlation coefficient (linear)
-    Kendall's rank coefficient (nonlinear)
-    '''
+    # ANOVA correlation coefficient (linear)
+    # Kendall's rank coefficient (nonlinear)
+    # '''
 
-    obj_2 = Data_processing('features_in_csv\datasetwojtek_august.csv')
-    y, X = obj_2.transform_data()
+    # obj_2 = Data_processing('features_in_csv\datasetwojtek_august.csv')
+    # y, X = obj_2.transform_data()
 
-    obj_test = Data_processing('features_in_csv\datasetwojtek_september.csv')
-    y_test, X_test = obj_test.transform_data()
+    # obj_test = Data_processing('features_in_csv\datasetwojtek_september.csv')
+    # y_test, X_test = obj_test.transform_data()
 
-    #Sklearn approach 66.67 accuracy parameters: 12, 2, 5
-    obj_3 = Data_model(y, X, y_test, X_test)
-    # obj_3.train_split(0.25, 1)
-    # obj_3.feature_selection('ANOVA')
-    obj_3.model_class_forest(12, 2, 5)
-
-    #Catboost approach accuracy//tmp out of use
+    # #Sklearn approach 66.67 accuracy parameters: 12, 2, 5
     # obj_3 = Data_model(y, X, y_test, X_test)
-    # obj_3.train_split(0.25, 1)
-    # obj_3.feature_selection('ANOVA')
-    # obj_3.model_class_catboost()
+    # # obj_3.train_split(0.25, 1)
+    # # obj_3.feature_selection('ANOVA')
+    # obj_3.model_class_forest(12, 2, 5)
+
+    # #Catboost approach accuracy//tmp out of use
+    # # obj_3 = Data_model(y, X, y_test, X_test)
+    # # obj_3.train_split(0.25, 1)
+    # # obj_3.feature_selection('ANOVA')
+    # # obj_3.model_class_catboost()
 
 if __name__ == '__main__':
     main()
