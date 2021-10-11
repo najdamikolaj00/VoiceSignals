@@ -7,8 +7,8 @@ from converter import converter
 from audio_preprocessing import import_audio, AudioPreprocessing
 
 def save_spectrograms():
-    os.chdir("..")
-    rootdir = 'Datano2'
+
+    rootdir = '../recordings'
     for subdir, dirs, files in os.walk(rootdir):
         for filename in files:
             if filename.endswith('.wav'):
