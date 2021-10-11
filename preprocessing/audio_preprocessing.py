@@ -1,72 +1,127 @@
-import matplotlib.pyplot as plt
-import numpy as np
+import csv
+import os.path
 import librosa
 import librosa.display
-import os
+import collections
+import numpy as np
+from pydub import AudioSegment
+from data_features import Data_features
+from converter import converter
 
+# def import_audio(path):
+#     if os.path.exists(path):
+#         audio_file, sample_rate = librosa.load(path)
+#         return audio_file, sample_rate
+#     else:
+#         raise FileNotFoundError 
 
-def import_audio(path):
-    if os.path.exists(path):
-        audio_data, sample_rate = librosa.load(path)
-        return audio_data, sample_rate
-    else:
-        raise FileNotFoundError 
+class AudioPreprocessing(object):
 
-class AudioPreprocessing():
-
-    def __init__(self, filename, audio_file, sample_rate):
+    def __init__(self):
         # Constructor
-        self.filename = filename
-        self.audio_file = audio_file
-        self.sample_rate = sample_rate
+        self.data = collections.defaultdict(list)
+        self.audio_file = []
+        self.sample_rate = 0
 
+    def import_audio(self):
+        # import audio data and sample rate to dictionary
+        # program sprawdzony działa w playground najda
+        rootdir = '../recordings'
+        for subdir, dirs, files in os.walk(rootdir):
+            for filename in files:
+                if filename.endswith('.wav'):
+                    pass
+                else:
+                    AudioSegment.from_file(os.path.join(subdir, filename), os.path.splitext(filename)[1][1:]).export(os.path.join(subdir
+                    , filename.split(".")[0] + '.wav'), format = 'wav')
+                    os.remove((os.path.join(subdir, filename)))
+
+                audio_data, sample_rate = librosa.load(os.path.join(subdir, filename))
+                self.data["audio_data"].append(audio_data)
+                self.data["sample_rate"].append(sample_rate)
+                self.data["sobriety"].append(subdir.split('\\')[-1])
+    
+    
     def crop_audio(self, threshold, boundary = 'both'):
         # Crop audio to start with a threshold value
         def delete_treshold_segments(audio_file, threshold):
-            audio_data = audio_file
-            while abs(audio_data[0]) < threshold:
-                    audio_data = audio_data[1:]
+            audio_file = audio_file
+            while abs(audio_file[0]) < threshold:
+                    audio_file = audio_file[1:]
 
-            return audio_data
+            return audio_file
 
-        audio_data = self.audio_file
-        reversed_audio_data = np.flip(audio_data)
+        audio_file = self.audio_file
+        reversed_audio_file = np.flip(audio_file)
 
         if boundary == 'left':
-            self.audio_file = delete_treshold_segments(audio_data, threshold)
+            self.audio_file = delete_treshold_segments(audio_file, threshold)
         elif boundary == 'right':
-            self.audio_file = np.flip(delete_treshold_segments(reversed_audio_data, threshold))
+            self.audio_file = np.flip(delete_treshold_segments(reversed_audio_file, threshold))
         elif boundary == 'both':
-            left_deleted = delete_treshold_segments(audio_data, threshold)
+            left_deleted = delete_treshold_segments(audio_file, threshold)
             right_deleted = delete_treshold_segments(np.flip(left_deleted), threshold)
             final = np.flip(right_deleted)
             self.audio_file = final
     
         return self.audio_file
 
+
+    def features(self, audio_file, sample_rate):
+        '''
+        Function for features extraction using librosa library
+
+        returns ''six'' features from audio file
+        '''
+
+        chroma_stft = librosa.feature.chroma_stft(y = audio_file, sr = sample_rate)
+        spec_cent = librosa.feature.spectral_centroid(y = audio_file, sr = sample_rate)
+        spec_bw = librosa.feature.spectral_bandwidth(y = audio_file, sr = sample_rate)
+        rolloff = librosa.feature.spectral_rolloff(y = audio_file, sr = sample_rate)
+        zcr = librosa.feature.zero_crossing_rate(audio_file)
+        mfcc = librosa.feature.mfcc(y = audio_file, sr = sample_rate)
+
+        return chroma_stft, spec_cent, spec_bw, rolloff, zcr, mfcc
+
     def convert_to_png(self, filename_path):
         cmap = plt.get_cmap('inferno')
-        plt.specgram(self.audio_file, NFFT=2048, Fs=2, Fc=0, noverlap=128, cmap=cmap, sides='default', mode='default', scale='dB')
+        plt.specgram(self.audio_file, NFFT = 2048, Fs = 2, Fc = 0, noverlap = 128, cmap = cmap, sides = 'default', mode = 'default', scale = 'dB')
         plt.axis('off')
         plt.savefig(f'{filename_path[:-3].replace(".", "")}.png')
         plt.clf()
-        
-    
-    def mfcc(self):
-        # Compute audio signal mfcc
-        return librosa.feature.mfcc(self.audio_file, sr = self.sample_rate)
-    
-    def fft(self):
-        # Compute Fourier transform
-        return np.fft.fft(self.audio_file)
 
-    def chroma_feature(self):
-        # Compute chroma-feature
-        return librosa.feature.chroma_stft(self.audio_file, sr = self.sample_rate)
-    
-    def zero_crossing_rate(self):
-        # Compute zero_crossing_rate
-        return librosa.zero_crossings(self.audio_file, pad = False)
+
+    def export_to_csv(self):
+        # function will make a csv file with good headers of features names
+        # program sprawdzony działa w playground najda
+
+        header = 'filename chroma_stft spectral_centroid spectral_bandwidth rolloff zero_crossing_rate'
+        for i in range(1, 21):
+            header += f' mfcc{i}'
+        header += ' label'
+        header = header.split()
+
+        with open('dataset.csv', 'w', newline = '') as file:
+            writer = csv.writer(file)
+            writer.writerow(header)
+
+        
+
+            for i in range(len(self.data['sobriety'])):
+
+                chroma_stft, spec_cent, spec_bw, rolloff, zcr, mfcc = self.features(self.data['audio_data'][i], self.data['sample_rate'][i])
+                
+                filename = self.data['sobriety'][i] + f'{i}'
+                to_append = f'{filename} {np.mean(chroma_stft)} {np.mean(spec_cent)} {np.mean(spec_bw)} {np.mean(rolloff)} {np.mean(zcr)}'    
+                
+                for e in mfcc:
+                    to_append += f' {np.mean(e)}'
+                to_append += " {}".format(self.data['sobriety'][i])
+                
+                writer = csv.writer(file)
+                writer.writerow(to_append.split())
+        
+        
     
     def plot_mfcc(self):
         # Plot mfcc transform
@@ -132,3 +187,10 @@ class AudioPreprocessing():
         plt.colorbar()
         plt.tight_layout()
         plt.show()
+
+
+if __name__ == "__main__":
+    
+    preprocessing = AudioPreprocessing()
+    preprocessing.import_audio()
+    preprocessing.export_to_csv()
