@@ -16,15 +16,6 @@ Second class --> steps: 4.
 Third class --> steps: 6.
 Fourth class --> steps: 7, 8.
 '''
-
-from data_operator import Data_Operator
-
-
-def main():
-
-    obj = Data_operator('data_test2')
-    obj.import_audio()
-
 from data_operator import Data_operator
 from data_preprocessing import Data_processing
 from data_model import Data_model
