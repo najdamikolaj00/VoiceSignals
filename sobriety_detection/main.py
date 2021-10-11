@@ -16,6 +16,7 @@ Second class --> steps: 4.
 Third class --> steps: 6.
 Fourth class --> steps: 7, 8.
 '''
+from converter import converter
 from data_operator import Data_operator
 from data_preprocessing import Data_processing
 from data_model import Data_model
@@ -32,7 +33,8 @@ def main():
     '''
     Second value required dict name and .csv file name like: (id)(age)(sex)(test) from csv file idagesextest.csv
     '''
-    obj = Data_operator('voice_data', '145M1.csv')
+    converter()
+    obj = Data_operator('voice_data', '1031F1.csv')
     obj.import_audio()
 
     '''
