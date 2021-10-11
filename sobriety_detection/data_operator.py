@@ -11,8 +11,8 @@ import os.path
 import librosa
 import collections
 import numpy as np
-from pydub import AudioSegment
 from data_features import Data_features
+from sklearn.preprocessing import MinMaxScaler
 
 class Data_operator(object):
 
@@ -52,22 +52,13 @@ class Data_operator(object):
                 writer = csv.writer(file)
                 writer.writerow(to_append.split())
 
-    
-    def converter(self):
-        for subdir, dirs, files in os.walk(self.rootdir):
-            for filename in files:
-                if filename.endswith('.wav'):
-                    continue
-                else:
-                    AudioSegment.from_file(os.path.join(subdir, filename), os.path.splitext(filename)[1][1:]).export(os.path.join(subdir
-                    , filename.split(".")[0] + '.wav'), format = 'wav')
-                    os.remove((os.path.join(subdir, filename)))
-        
-    
     def import_audio(self):
         for subdir, dirs, files in os.walk(self.rootdir):
             for filename in files:
                 audio_data, sample_rate = librosa.load(os.path.join(subdir, filename))
+                # norm_scaler = MinMaxScaler()
+                # audio_data_normalized = norm_scaler.fit_transform(audio_data.reshape(-1,1))
+                # self.data["audio_data"].append(audio_data_normalized)
                 self.data["audio_data"].append(audio_data)
                 self.data["sample_rate"].append(sample_rate)
                 self.data["sobriety"].append(subdir.split('\\')[-1])
