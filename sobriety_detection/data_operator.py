@@ -16,13 +16,13 @@ from sklearn.preprocessing import MinMaxScaler
 
 class Data_operator(object):
 
-    def __init__(self, rootdir, csvfilename):
+    def __init__(self, rootdir: str, csvfilename: str) -> None:
 
         self.rootdir = rootdir
         self.csvfilename = csvfilename
         self.data = collections.defaultdict(list)
 
-    def make_csv_file(self):
+    def make_csv_file(self) -> None:
         header = 'chroma_stft spectral_centroid spectral_bandwidth rolloff zero_crossing_rate'
         for i in range(1, 21):
             header += f' mfcc{i}'
@@ -35,7 +35,7 @@ class Data_operator(object):
             writer.writerow(header)
 
 
-    def save_features_to_csv(self):
+    def save_features_to_csv(self) -> None:
         
         for i in range(len(self.data['sobriety'])):
 
@@ -52,7 +52,7 @@ class Data_operator(object):
                 writer = csv.writer(file)
                 writer.writerow(to_append.split())
 
-    def import_audio(self):
+    def import_audio(self) -> None:
         for subdir, dirs, files in os.walk(self.rootdir):
             for filename in files:
                 audio_data, sample_rate = librosa.load(os.path.join(subdir, filename))
@@ -61,7 +61,6 @@ class Data_operator(object):
                 # self.data["audio_data"].append(audio_data_normalized)
                 self.data["audio_data"].append(audio_data)
                 self.data["sample_rate"].append(sample_rate)
-                print(subdir.split('/')[-1])
                 self.data["sobriety"].append(subdir.split('/')[-1])
         
         self.make_csv_file()

@@ -8,7 +8,7 @@ from catboost import CatBoostClassifier
 
 class Data_model(object):
 
-    def __init__(self, y, X, y_test_data, X_test_data):
+    def __init__(self, y, X, y_test_data, X_test_data) -> None:
         
         '''
         Operator
@@ -45,7 +45,7 @@ class Data_model(object):
         self.X_test_fs = None
         self.y_test_fs = None
 
-    def train_split(self, test_size, random_state):
+    def train_split(self, test_size: float, random_state: int) -> None:
 
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.X, self.y, test_size = test_size, random_state = random_state)
 
@@ -68,7 +68,7 @@ class Data_model(object):
                 self.X_test_fs = fs.transform(self.X_test)
                 self.y_test_fs =self.y_test
 
-    def model_class_forest(self, n_estimators, max_depth, random_state):
+    def model_class_forest(self, n_estimators: int, max_depth: int, random_state: float) -> None:
 
         if self.X_train_fs is not None and self.X_train is not None:
             
@@ -103,7 +103,7 @@ class Data_model(object):
             print('Accuracy: %.2f' % (accuracy*100))
 
     #tmp out of use
-    # def model_class_catboost(self):
+    # def model_class_catboost(self) -> None:
 
     #     if self.X_train_fs is not None:
 
