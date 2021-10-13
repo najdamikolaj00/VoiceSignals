@@ -8,14 +8,14 @@ import librosa
 
 class Data_features(object):
 
-    def __init__(self, audio_data, sample_rate):
+    def __init__(self, audio_data, sample_rate) -> None:
         '''
         Constructor takes dictionary of all audio_data, sample_rate and sobriety.
         '''
         self.audio_data = audio_data
         self.sample_rate = sample_rate
 
-    def features(self):
+    def features(self) -> float:
         '''
         Function for features extraction using librosa library
         returns ''six'' features from audio file
