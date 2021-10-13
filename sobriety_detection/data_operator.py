@@ -61,7 +61,8 @@ class Data_operator(object):
                 # self.data["audio_data"].append(audio_data_normalized)
                 self.data["audio_data"].append(audio_data)
                 self.data["sample_rate"].append(sample_rate)
-                self.data["sobriety"].append(subdir.split('\\')[-1])
+                print(subdir.split('/')[-1])
+                self.data["sobriety"].append(subdir.split('/')[-1])
         
         self.make_csv_file()
         self.save_features_to_csv()
