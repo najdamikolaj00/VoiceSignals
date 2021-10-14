@@ -16,10 +16,11 @@ from sklearn.preprocessing import MinMaxScaler
 
 class Data_operator(object):
 
-    def __init__(self, rootdir: str, csvfilename: str) -> None:
+    def __init__(self, rootdir: str, csvfilename: str, operation_system: str) -> None:
 
         self.rootdir = rootdir
         self.csvfilename = csvfilename
+        self.operation_system = operation_system
         self.data = collections.defaultdict(list)
 
     def make_csv_file(self) -> None:
@@ -61,7 +62,10 @@ class Data_operator(object):
                 # self.data["audio_data"].append(audio_data_normalized)
                 self.data["audio_data"].append(audio_data)
                 self.data["sample_rate"].append(sample_rate)
-                self.data["sobriety"].append(subdir.split('/')[-1])
+                if self.operation_system == "windows":
+                    self.data["sobriety"].append(subdir.split('\\')[-1])
+                elif self.operation_system == "linux":
+                    self.data["sobriety"].append(subdir.split('/')[-1])
         
         self.make_csv_file()
         self.save_features_to_csv()

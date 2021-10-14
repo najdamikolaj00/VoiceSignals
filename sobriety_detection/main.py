@@ -33,8 +33,8 @@ def main():
     '''
     Second value required dict name and .csv file name like: (id)(age)(sex)(test) from csv file idagesextest.csv
     '''
-    converter()
-    obj = Data_operator('voice_data', '221M2.csv')
+    # converter()
+    obj = Data_operator('voice_data', '221M3.csv', 'windows')
     obj.import_audio()
 
     '''
