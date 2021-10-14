@@ -23,3 +23,5 @@
     <li>Make the code more readable.</li>
     <li>Learn about Machine Learning in case of using it for this project.</li>
 </ul>
+<h3>!Warning!</h3>
+<h4>If you are using data_operator.py file you have to provide name of your operating system as 3rd parameter in class object</h4>
