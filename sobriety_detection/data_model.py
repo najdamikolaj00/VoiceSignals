@@ -92,6 +92,7 @@ class Data_model(object):
             model.fit(self.X, self.y)
             prediction_values = model.predict(self.X_test_data)
             accuracy = accuracy_score(self.y_test_data, prediction_values)
+            print(prediction_values)
             print('Accuracy: %.2f' % (accuracy*100))
 
         else:
