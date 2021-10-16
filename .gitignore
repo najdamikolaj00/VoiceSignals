@@ -5,3 +5,4 @@
 *.ali
 # Ignore the env directory
 env/
+__pycache__/

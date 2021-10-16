@@ -18,3 +18,4 @@ def converter() -> None:
                 os.remove((os.path.join(subdir, filename)))
                 
 
+converter()
