@@ -6,3 +6,4 @@ librosa==0.8.1
 matplotlib==3.3.4
 pydub==0.25.1
 catboost==0.26.1
+noisereduce==2.0.0
