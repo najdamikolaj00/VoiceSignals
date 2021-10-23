@@ -10,7 +10,7 @@ from audio_split import audio_split
 from noisereduction import noisereduce
 import os
 from sklearn.model_selection import train_test_split
-
+# import xgboost as xgb
 
 def main():
     
@@ -39,12 +39,13 @@ def main():
     Kendall's rank coefficient (nonlinear)
     '''
     
-    obj_test = Data_processing('textplusdescription025all.csv')
+                
+    obj_test = Data_processing('AllVoicestextdescription.csv')
     y, X = obj_test.transform_data()
     
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.25, random_state = 12)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.25,  random_state = 12)
 
-    #model = XGBoostClassifier()
+    #model = xgb.XGBClassifier()
     #model = RandomForestClassifier()
     model = CatBoostClassifier()
     model.fit(X_train, y_train)
@@ -52,6 +53,6 @@ def main():
     accuracy = accuracy_score(y_test, prediction_values)
     print('Accuracy: %.2f' % (accuracy*100))
     print(prediction_values)
-       
+    
 if __name__ == '__main__':
     main()
