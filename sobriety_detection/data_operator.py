@@ -57,16 +57,14 @@ class Data_operator(object):
         for subdir, dirs, files in os.walk(self.rootdir):
             for filename in files:
                 audio_data, sample_rate = librosa.load(os.path.join(subdir, filename))
-                # norm_scaler = MinMaxScaler()
-                # audio_data_normalized = norm_scaler.fit_transform(audio_data.reshape(-1,1))
-                # self.data["audio_data"].append(audio_data_normalized)
+                
                 self.data["audio_data"].append(audio_data)
                 self.data["sample_rate"].append(sample_rate)
                 if self.operation_system == "windows":
                     self.data["sobriety"].append(subdir.split('\\')[-1])
                 elif self.operation_system == "linux":
                     self.data["sobriety"].append(subdir.split('/')[-1])
-        
+            
         self.make_csv_file()
         self.save_features_to_csv()
         

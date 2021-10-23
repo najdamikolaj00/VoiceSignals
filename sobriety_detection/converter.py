@@ -7,7 +7,7 @@ from pydub import AudioSegment
 import os
 
 def converter() -> None:
-    rootdir = 'voice_data'
+    rootdir = 'audio_to_split025'
     for subdir, dirs, files in os.walk(rootdir):
         for filename in files:
             if filename.endswith('.wav'):

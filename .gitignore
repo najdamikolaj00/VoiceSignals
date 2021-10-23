@@ -6,3 +6,4 @@
 # Ignore the env directory
 env/
 __pycache__/
+catboost_info/
