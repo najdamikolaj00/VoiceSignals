@@ -5,6 +5,10 @@ from data_model import Data_model
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
+import os
+from catboost import CatBoostClassifier
+import xgboost as xgb
 
 def main():
     
@@ -25,35 +29,27 @@ def main():
     ANOVA correlation coefficient (linear)
     Kendall's rank coefficient (nonlinear)
     '''
-    # data = pd.read_csv('features_in_csv/BadanieTekst/221M1.csv')
-    # data_1 = pd.read_csv('features_in_csv/BadanieTekst/221M2.csv')
-    # data_2 = pd.read_csv('features_in_csv/BadanieTekst/221M3.csv')
-    # data.to_csv('221Mlearn.csv', mode = 'a', header=False, index=False)
-    # data_1.to_csv('221Mlearn.csv', mode = 'a', header=False, index=False)
-    # data_2.to_csv('221Mlearn.csv', mode = 'a', header=False, index=False)
-    # data_1 = pd.read_csv('features_in_csv/BadanieTekst/221M65.csv')
-    # data_2 = pd.read_csv('features_in_csv/BadanieTekst/221M5.csv')
-    # data_1.to_csv('221Mlearn.csv', mode = 'a', header=False, index=False)
-    # data_2.to_csv('221Mlearn.csv', mode = 'a', header=False, index=False)
+    # rootdir = 'features_in_csv'
+    # for subdir, dirs, files in os.walk(rootdir):
+    #     for filename in files:
+    #         # if 'F' in filename:
+    #         data = pd.read_csv(os.path.join(subdir, filename))
+    #         data.to_csv('AllVoicestextdescription.csv', mode = 'a', header=False, index=False)
+                
+    obj_test = Data_processing('AllVoicestextdescription.csv')
+    y, X = obj_test.transform_data()
     
-    obj_train = Data_processing('221Mlearn.csv')
-    y_train, X_train = obj_train.transform_data()
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.25,  random_state = 12)
 
-    obj_test = Data_processing('221MTest.csv')
-    y_test, X_test = obj_test.transform_data()
-    
-    # model = Data_model(y_train, X_train, y_test, X_test)
-    # model.model_class_forest()
-    model = RandomForestClassifier()
+    #model = xgb.XGBClassifier()
+    #model = RandomForestClassifier()
+    model = CatBoostClassifier()
     model.fit(X_train, y_train)
     prediction_values = model.predict(X_test)
     accuracy = accuracy_score(y_test, prediction_values)
     print('Accuracy: %.2f' % (accuracy*100))
     
     print(prediction_values)
-       
-    
-    
 
 if __name__ == '__main__':
     main()
