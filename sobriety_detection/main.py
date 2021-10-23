@@ -4,7 +4,13 @@ from data_preprocessing import Data_processing
 from data_model import Data_model
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
+from catboost import CatBoostClassifier
 from sklearn.metrics import accuracy_score
+from audio_split import audio_split
+from noisereduction import noisereduce
+import os
+from sklearn.model_selection import train_test_split
+
 
 def main():
     
@@ -12,8 +18,15 @@ def main():
     Second value required dictionary name and .csv file name like: (id)(age)(sex)(number of  a test) from csv file idagesextest.csv
     '''
     # converter()
-    # obj = Data_operator('voice_data', '221M65.csv', 'windows')
+    # noisereduce()
+    # audio_split()
+
+    
+    # obj = Data_operator('folder_name', 'filename.csv', 'operating system')
     # obj.import_audio()
+    # data = pd.read_csv('filename.csv')
+    # data.to_csv('filename.csv', mode = 'a', header=False, index=False)
+    
 
     '''
     Our data variables: 
@@ -25,35 +38,20 @@ def main():
     ANOVA correlation coefficient (linear)
     Kendall's rank coefficient (nonlinear)
     '''
-    # data = pd.read_csv('features_in_csv/BadanieTekst/221M1.csv')
-    # data_1 = pd.read_csv('features_in_csv/BadanieTekst/221M2.csv')
-    # data_2 = pd.read_csv('features_in_csv/BadanieTekst/221M3.csv')
-    # data.to_csv('221Mlearn.csv', mode = 'a', header=False, index=False)
-    # data_1.to_csv('221Mlearn.csv', mode = 'a', header=False, index=False)
-    # data_2.to_csv('221Mlearn.csv', mode = 'a', header=False, index=False)
-    # data_1 = pd.read_csv('features_in_csv/BadanieTekst/221M65.csv')
-    # data_2 = pd.read_csv('features_in_csv/BadanieTekst/221M5.csv')
-    # data_1.to_csv('221Mlearn.csv', mode = 'a', header=False, index=False)
-    # data_2.to_csv('221Mlearn.csv', mode = 'a', header=False, index=False)
     
-    obj_train = Data_processing('221Mlearn.csv')
-    y_train, X_train = obj_train.transform_data()
+    obj_test = Data_processing('textplusdescription025all.csv')
+    y, X = obj_test.transform_data()
+    
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.25, random_state = 12)
 
-    obj_test = Data_processing('221MTest.csv')
-    y_test, X_test = obj_test.transform_data()
-    
-    # model = Data_model(y_train, X_train, y_test, X_test)
-    # model.model_class_forest()
-    model = RandomForestClassifier()
+    #model = XGBoostClassifier()
+    #model = RandomForestClassifier()
+    model = CatBoostClassifier()
     model.fit(X_train, y_train)
     prediction_values = model.predict(X_test)
     accuracy = accuracy_score(y_test, prediction_values)
     print('Accuracy: %.2f' % (accuracy*100))
-    
     print(prediction_values)
        
-    
-    
-
 if __name__ == '__main__':
     main()
