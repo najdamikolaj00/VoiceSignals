@@ -5,6 +5,12 @@ from sklearn.feature_selection import f_classif
 from sklearn.feature_selection import SelectKBest
 from sklearn.metrics import accuracy_score
 from catboost import CatBoostClassifier
+import sys
+import xgboost as xgb
+sys.path.insert(0, '../preprocessing')
+from audio_preprocessing import AudioPreprocessing
+
+x = AudioPreprocessing()
 
 class Data_model(object):
 
