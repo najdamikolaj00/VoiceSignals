@@ -5,7 +5,6 @@ import librosa.display
 import collections
 import numpy as np
 from pydub import AudioSegment
-from data_features import Data_features
 from converter import converter
 
 # def import_audio(path):
@@ -189,8 +188,3 @@ class AudioPreprocessing(object):
         plt.show()
 
 
-if __name__ == "__main__":
-    
-    preprocessing = AudioPreprocessing()
-    preprocessing.import_audio()
-    preprocessing.export_to_csv()
