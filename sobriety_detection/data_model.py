@@ -109,6 +109,16 @@ class Data_model(object):
             accuracy = accuracy_score(self.y_test, prediction_values)
             print('Accuracy: %.2f' % (accuracy*100))
 
+    def model_class_xgboost(self, n_estimators: int, max_depth: int, random_state: float) -> None:
+        
+        data_dmatrix = xgb.DMatrix(data = self.X_train, label = self.y_train)
+        model = xgb.XGBClassifier(max_depth = max_depth, n_estimators = n_estimators)
+        model.fit(self.X, self.y)
+        prediction_values = model.predict(self.X_test_data)
+        accuracy = accuracy_score(self.y_test_data, prediction_values)
+        print(prediction_values)
+        print('Accuracy: %.2f' % (accuracy * 100))
+
     #tmp out of use
     # def model_class_catboost(self) -> None:
 
