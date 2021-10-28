@@ -24,7 +24,6 @@ class AudioPreprocessing(object):
         self.data = collections.defaultdict(list)
         self.audio_file = []
         self.sample_rate = 0
-        self.operating_system = "linux"
 
     def import_audio(self, path):
         # import audio data and sample rate to dictionary
@@ -42,10 +41,7 @@ class AudioPreprocessing(object):
                 audio_data, sample_rate = librosa.load(os.path.join(subdir, filename))
                 self.data["audio_data"].append(audio_data)
                 self.data["sample_rate"].append(sample_rate)
-                if self.operation_system == "windows":
-                    self.data["sobriety"].append(subdir.split('\\')[-1])
-                elif self.operation_system == "linux":
-                    self.data["sobriety"].append(subdir.split('/')[-1])
+                self.data["sobriety"].append(filename.split('.wav')[0])
     
 
     def crop_audio(self, threshold, boundary = 'both'):
@@ -117,13 +113,19 @@ class AudioPreprocessing(object):
 
                 chroma_stft, spec_cent, spec_bw, rolloff, zcr, mfcc = self.features(self.data['audio_data'][i], self.data['sample_rate'][i])
                 
-                filename = self.data['sobriety'][i] + f'{i}'
+                filename = self.data['sobriety'][i]
                 to_append = f'{filename} {np.mean(chroma_stft)} {np.mean(spec_cent)} {np.mean(spec_bw)} {np.mean(rolloff)} {np.mean(zcr)}'    
                 
                 for e in mfcc:
                     to_append += f' {np.mean(e)}'
-                to_append += " {}".format(self.data['sobriety'][i])
+
+                if any(substring in self.data['sobriety'][i] for substring in ["sober", "unsober"]):
+                    label = ["sober" if "sober" in self.data['sobriety'][i] else "unsober"][0]
+                else:
+                    label = "uknown"
                 
+                to_append += f" {label}"
+                                
                 writer = csv.writer(file)
                 writer.writerow(to_append.split())
         
@@ -207,11 +209,8 @@ class AudioPreprocessing(object):
         plt.tight_layout()
         plt.show()
 
-
 if __name__ == "__main__":
 
-    process = AudioPreprocessing()
-    # process.import_audio(path) # Loads all the audio files from the selected folder to the AudioPreprocessing class
-    # process.save_to_csv(path_and_filename) # Saves the features of all audio files that have been loaded to the class in a csv file
-    X_train, X_test, y_train, y_test = process.model_data_split("../features_in_csv/025frames/mixed025all.csv")
-    print(X_train, y_train, X_test, y_test)
+    data = AudioPreprocessing()
+    data.import_audio("../recordings")
+    data.save_to_csv("../csv/test.csv")
