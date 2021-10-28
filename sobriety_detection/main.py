@@ -50,11 +50,5 @@ def main():
     ANOVA correlation coefficient (linear)
     Kendall's rank coefficient (nonlinear)
     ''' 
-    import matplotlib.pyplot as plt
-    x = [86.36, 100, 96.43, 89.66]
-    plt.figure()
-    plt.hist(x)
-    plt.show()           
-
 if __name__ == '__main__':
     main()

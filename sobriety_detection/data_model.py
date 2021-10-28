@@ -6,8 +6,8 @@ from sklearn.feature_selection import SelectKBest
 from sklearn.metrics import accuracy_score
 from catboost import CatBoostClassifier
 import sys
-import xgboost as xgb
-sys.path.insert(0, '../preprocessing')
+# import xgboost as xgb
+# sys.path.insert(0, '../preprocessing')
 #rom audio_preprocessing import AudioPreprocessing
 
 #x = AudioPreprocessing()
