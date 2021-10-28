@@ -5,14 +5,17 @@ import librosa.display
 import collections
 import numpy as np
 from pydub import AudioSegment
-from converter import converter
+import numpy as np
+import pandas as pd
+import os
+import csv
+import warnings
+from sklearn.metrics import mean_absolute_error
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder, StandardScaler
 
-# def import_audio(path):
-#     if os.path.exists(path):
-#         audio_file, sample_rate = librosa.load(path)
-#         return audio_file, sample_rate
-#     else:
-#         raise FileNotFoundError 
+
 
 class AudioPreprocessing(object):
 
@@ -22,10 +25,10 @@ class AudioPreprocessing(object):
         self.audio_file = []
         self.sample_rate = 0
 
-    def import_audio(self):
+    def import_audio(self, path):
         # import audio data and sample rate to dictionary
         # program sprawdzony działa w playground najda
-        rootdir = '../voice_data'
+        rootdir = path
         for subdir, dirs, files in os.walk(rootdir):
             for filename in files:
                 if filename.endswith('.wav'):
@@ -38,7 +41,7 @@ class AudioPreprocessing(object):
                 audio_data, sample_rate = librosa.load(os.path.join(subdir, filename))
                 self.data["audio_data"].append(audio_data)
                 self.data["sample_rate"].append(sample_rate)
-                self.data["sobriety"].append(subdir.split('\\')[-1])
+                self.data["sobriety"].append(filename.split('.wav')[0])
     
 
     def crop_audio(self, threshold, boundary = 'both'):
@@ -90,7 +93,7 @@ class AudioPreprocessing(object):
         plt.clf()
 
 
-    def export_to_csv(self):
+    def save_to_csv(self, path):
         # function will make a csv file with good headers of features names
         # program sprawdzony działa w playground najda
 
@@ -100,7 +103,7 @@ class AudioPreprocessing(object):
         header += ' label'
         header = header.split()
 
-        with open('dataset.csv', 'w', newline = '') as file:
+        with open(path, 'w', newline = '') as file:
             writer = csv.writer(file)
             writer.writerow(header)
 
@@ -110,18 +113,37 @@ class AudioPreprocessing(object):
 
                 chroma_stft, spec_cent, spec_bw, rolloff, zcr, mfcc = self.features(self.data['audio_data'][i], self.data['sample_rate'][i])
                 
-                filename = self.data['sobriety'][i] + f'{i}'
+                filename = self.data['sobriety'][i]
                 to_append = f'{filename} {np.mean(chroma_stft)} {np.mean(spec_cent)} {np.mean(spec_bw)} {np.mean(rolloff)} {np.mean(zcr)}'    
                 
                 for e in mfcc:
                     to_append += f' {np.mean(e)}'
-                to_append += " {}".format(self.data['sobriety'][i])
+
+                if any(substring in self.data['sobriety'][i] for substring in ["sober", "unsober"]):
+                    label = ["sober" if "sober" in self.data['sobriety'][i] else "unsober"][0]
+                else:
+                    label = "unknown"
                 
+                to_append += f" {label}"
+                                
                 writer = csv.writer(file)
                 writer.writerow(to_append.split())
         
-        
-    
+    def model_data_split(self, filename): 
+        """ Method for performing train-test split on the data from the selected file """
+
+        data = pd.read_csv(filename)
+        data.head() # Dropping unneccesary columns
+        sobriety_list = data.iloc[:, -1]
+        encoder = LabelEncoder()
+        y = encoder.fit_transform(sobriety_list)#Scaling the Feature columns
+        scaler = StandardScaler()
+        X = scaler.fit_transform(np.array(data.iloc[:, :-1], dtype = float))#Dividing data into training and Testing set
+        X_train, X_test, y_train, y_test = train_test_split(X, y, random_state = 5)
+
+        return X_train, X_test, y_train, y_test
+
+
     def plot_mfcc(self):
         # Plot mfcc transform
         mffc = self.mfcc()
@@ -186,5 +208,4 @@ class AudioPreprocessing(object):
         plt.colorbar()
         plt.tight_layout()
         plt.show()
-
 
