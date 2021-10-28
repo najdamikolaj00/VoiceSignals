@@ -122,7 +122,7 @@ class AudioPreprocessing(object):
                 if any(substring in self.data['sobriety'][i] for substring in ["sober", "unsober"]):
                     label = ["sober" if "sober" in self.data['sobriety'][i] else "unsober"][0]
                 else:
-                    label = "uknown"
+                    label = "unknown"
                 
                 to_append += f" {label}"
                                 
