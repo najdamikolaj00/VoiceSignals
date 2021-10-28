@@ -8,9 +8,9 @@ from catboost import CatBoostClassifier
 import sys
 import xgboost as xgb
 sys.path.insert(0, '../preprocessing')
-from audio_preprocessing import AudioPreprocessing
+#rom audio_preprocessing import AudioPreprocessing
 
-x = AudioPreprocessing()
+#x = AudioPreprocessing()
 
 class SobrietyModel(object):
 

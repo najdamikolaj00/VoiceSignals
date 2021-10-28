@@ -209,8 +209,3 @@ class AudioPreprocessing(object):
         plt.tight_layout()
         plt.show()
 
-if __name__ == "__main__":
-
-    data = AudioPreprocessing()
-    data.import_audio("../recordings")
-    data.save_to_csv("../csv/test.csv")
