@@ -5,14 +5,17 @@ import librosa.display
 import collections
 import numpy as np
 from pydub import AudioSegment
-from converter import converter
+import numpy as np
+import pandas as pd
+import os
+import csv
+import warnings
+from sklearn.metrics import mean_absolute_error
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder, StandardScaler
 
-# def import_audio(path):
-#     if os.path.exists(path):
-#         audio_file, sample_rate = librosa.load(path)
-#         return audio_file, sample_rate
-#     else:
-#         raise FileNotFoundError 
+
 
 class AudioPreprocessing(object):
 
@@ -21,11 +24,12 @@ class AudioPreprocessing(object):
         self.data = collections.defaultdict(list)
         self.audio_file = []
         self.sample_rate = 0
+        self.operating_system = "linux"
 
-    def import_audio(self):
+    def import_audio(self, path):
         # import audio data and sample rate to dictionary
         # program sprawdzony działa w playground najda
-        rootdir = '../voice_data'
+        rootdir = path
         for subdir, dirs, files in os.walk(rootdir):
             for filename in files:
                 if filename.endswith('.wav'):
@@ -38,7 +42,10 @@ class AudioPreprocessing(object):
                 audio_data, sample_rate = librosa.load(os.path.join(subdir, filename))
                 self.data["audio_data"].append(audio_data)
                 self.data["sample_rate"].append(sample_rate)
-                self.data["sobriety"].append(subdir.split('\\')[-1])
+                if self.operation_system == "windows":
+                    self.data["sobriety"].append(subdir.split('\\')[-1])
+                elif self.operation_system == "linux":
+                    self.data["sobriety"].append(subdir.split('/')[-1])
     
 
     def crop_audio(self, threshold, boundary = 'both'):
@@ -90,7 +97,7 @@ class AudioPreprocessing(object):
         plt.clf()
 
 
-    def export_to_csv(self):
+    def save_to_csv(self, path):
         # function will make a csv file with good headers of features names
         # program sprawdzony działa w playground najda
 
@@ -100,7 +107,7 @@ class AudioPreprocessing(object):
         header += ' label'
         header = header.split()
 
-        with open('dataset.csv', 'w', newline = '') as file:
+        with open(path, 'w', newline = '') as file:
             writer = csv.writer(file)
             writer.writerow(header)
 
@@ -120,8 +127,21 @@ class AudioPreprocessing(object):
                 writer = csv.writer(file)
                 writer.writerow(to_append.split())
         
-        
-    
+    def model_data_split(self, filename): 
+        """ Method for performing train-test split on the data from the selected file """
+
+        data = pd.read_csv(filename)
+        data.head() # Dropping unneccesary columns
+        sobriety_list = data.iloc[:, -1]
+        encoder = LabelEncoder()
+        y = encoder.fit_transform(sobriety_list)#Scaling the Feature columns
+        scaler = StandardScaler()
+        X = scaler.fit_transform(np.array(data.iloc[:, :-1], dtype = float))#Dividing data into training and Testing set
+        X_train, X_test, y_train, y_test = train_test_split(X, y, random_state = 5)
+
+        return X_train, X_test, y_train, y_test
+
+
     def plot_mfcc(self):
         # Plot mfcc transform
         mffc = self.mfcc()
@@ -188,3 +208,10 @@ class AudioPreprocessing(object):
         plt.show()
 
 
+if __name__ == "__main__":
+
+    process = AudioPreprocessing()
+    # process.import_audio(path) # Loads all the audio files from the selected folder to the AudioPreprocessing class
+    # process.save_to_csv(path_and_filename) # Saves the features of all audio files that have been loaded to the class in a csv file
+    X_train, X_test, y_train, y_test = process.model_data_split("../features_in_csv/025frames/mixed025all.csv")
+    print(X_train, y_train, X_test, y_test)

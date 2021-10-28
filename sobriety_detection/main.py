@@ -18,19 +18,7 @@ Third class --> steps: 6.
 Fourth class --> steps: 7, 8.
 '''
 
-from data_operator import Data_Operator
 
-
-def main():
-
-    obj = Data_operator('data_test2')
-    obj.import_audio()
-
-
-from converter import converter
-
-from data_operator import Data_operator
-from data_preprocessing import Data_processing
 from data_model import Data_model
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
@@ -39,8 +27,11 @@ from sklearn.metrics import accuracy_score
 from audio_split import audio_split
 from noisereduction import noisereduce
 import os
+import sys
+import xgboost as xgb
 from sklearn.model_selection import train_test_split
-# import xgboost as xgb
+sys.path.insert(0, '../preprocessing')
+from audio_preprocessing import AudioPreprocessing
 
 def main():
     
@@ -69,18 +60,14 @@ def main():
     Kendall's rank coefficient (nonlinear)
     '''
 
+    
 
-    obj_2 = Data_processing('features_in_csv\datasetwojtek_august.csv')
-    y, X = obj_2.transform_data()
-
-    obj_test = Data_processing('features_in_csv\datasetwojtek_september.csv')
-    y_test, X_test = obj_test.transform_data()
-
-    #Sklearn approach 66.67 accuracy parameters: 12, 2, 5
-    obj_3 = Data_model(y, X, y_test, X_test)
+    # #Sklearn approach 66.67 accuracy parameters: 12, 2, 5
+    # obj_3 = Data_model(y, X, y_test, X_test)
     # obj_3.train_split(0.25, 1)
     # obj_3.feature_selection('ANOVA')
-    obj_3.model_class_forest(12, 2, 5)
+    # obj_3.model_class_forest(12, 2, 5)
+
 
     #Catboost approach accuracy//tmp out of use
     # obj_3 = Data_model(y, X, y_test, X_test)
@@ -89,16 +76,12 @@ def main():
     # obj_3.model_class_catboost()
 
 
-    
-                
-    obj_test = Data_processing('AllVoicestextdescription.csv')
-    y, X = obj_test.transform_data()
-    
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.25,  random_state = 12)
+    data = AudioPreprocessing()
+    X_train, X_test, y_train, y_test = data.model_data_split("../features_in_csv/025frames/mixed025all.csv")
 
-    #model = xgb.XGBClassifier()
-    #model = RandomForestClassifier()
-    model = CatBoostClassifier()
+    model = xgb.XGBClassifier()
+    # model = RandomForestClassifier()
+    # model = CatBoostClassifier()
     model.fit(X_train, y_train)
     prediction_values = model.predict(X_test)
     accuracy = accuracy_score(y_test, prediction_values)

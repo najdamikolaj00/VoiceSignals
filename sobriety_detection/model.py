@@ -12,7 +12,7 @@ from audio_preprocessing import AudioPreprocessing
 
 x = AudioPreprocessing()
 
-class Data_model(object):
+class SobrietyModel(object):
 
     def __init__(self, y, X, y_test_data, X_test_data) -> None:
         
